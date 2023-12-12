@@ -1,6 +1,6 @@
-namespace snake;
+namespace Snake;
 
-public class snakeGame{
+public class SnakeGame{
     private int[] headLocation, appleLocation;
     private int[,] board, snakeCoords, portalCoords;
     private int score, boardSize, numberOfMoves;
@@ -313,7 +313,7 @@ public class snakeGame{
         Console.WriteLine($"You did a total of {numberOfMoves} moves.");
     }
 
-    public snakeGame(int size, int portals){
+    public SnakeGame(int size, int portals){
         score = 0;
         numberOfMoves = 0;
         boardSize = size;

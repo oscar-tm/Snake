@@ -1,8 +1,8 @@
-﻿using snake;
+﻿using Snake;
 
 int size = 13, portals = 5;
 
-var testSnake = new snakeGame(size, portals);
+var testSnake = new SnakeGame(size, portals);
 testSnake.CreateBoard();
 Thread.Sleep(500);
 ConsoleKeyInfo cki;
