@@ -199,6 +199,14 @@ namespace Snake
         }
 
         /// <summary>
+        /// Executes a move directly from in put with out converting a cki to int.
+        /// </summary>
+        /// <param name="move">Move to be played.</param>
+        public void DirectMove(int move){
+            MakeMove(move);
+        }
+
+        /// <summary>
         /// Converts the string of a key to correct move.
         /// </summary>
         /// <param name="key">The key to that is to be converted</param>
@@ -318,7 +326,7 @@ namespace Snake
             }
             else if (portalCoords[index, portal] == boardSize){
                 headLocation[0] = boardSize - 1;
-                headLocation[1] = portalCoords[index, portal + 1];
+                headLocation[1] = portalCoords[index, portal + 1] == boardSize? boardSize-1 : portalCoords[index, portal + 1];
             }
             else if (portalCoords[index, portal + 1] == 0){
                 headLocation[0] = portalCoords[index, portal];
