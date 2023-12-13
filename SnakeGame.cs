@@ -1,15 +1,65 @@
 namespace Snake
 {
+    /// <summary>
+    /// The class for Snake, contains a constructor function and all the nessecary methods for the game
+    /// </summary>
     public class SnakeGame{
-        private int[] headLocation, appleLocation;
-        private int[,] board, snakeCoords, portalCoords;
-        private int score, boardSize, numberOfMoves;
+        /// <summary>
+        /// Stores the location of the head.
+        /// </summary>
+        private int[] headLocation;
+
+        /// <summary>
+        /// Contains the applelocation.
+        /// </summary>
+        private int[] appleLocation;
+
+        /// <summary>
+        /// Arrays that contains the current board/playarea.
+        /// </summary>
+        private int[,] board;
+
+        /// <summary>
+        /// Array that contains all the snakecoords except the head.
+        /// </summary>
+        private int[,] snakeCoords;
+
+        /// <summary>
+        /// Arrays that contains the portal locations.
+        /// </summary>
+        private int[,] portalCoords;
+
+        /// <summary>
+        /// Current score of the game.
+        /// </summary>
+        private int score;
+
+        /// <summary>
+        /// Size of the board.
+        /// </summary>
+        private int boardSize;
+
+        /// <summary>
+        /// The total number of moves.
+        /// </summary>
+        private int numberOfMoves;
+
+        /// <summary>
+        /// Current state of the game.
+        /// </summary>
         private bool gameOver;
+
+        /// <summary>
+        /// The number of portals.
+        /// </summary>
         private int numberOfPortals;
 
-        //Creates a board with size "size" and randomly places items to start the game
+        /// <summary>
+        /// Creates a board with size "size" and randomly places items to start the game
+        /// </summary>
         public void CreateBoard(){
-            var randGen = new Random(); //mem leak?
+            
+            var randGen = new Random();
 
             for (int i = 0; i < 2; ++i){
                 headLocation[i] = randGen.Next(boardSize);
@@ -21,6 +71,9 @@ namespace Snake
             board[headLocation[0], headLocation[1]] = 1;
             board[appleLocation[0], appleLocation[1]] = 3;
 
+            /// <summary>
+            /// Checks for overlap between the gates of a portal.
+            /// </summary>
             bool OverlapCheck(int j){
                 if (portalCoords[j, 0] == portalCoords[j, 2] && portalCoords[j, 0] == portalCoords[j, 2] && portalCoords[j, 0] == portalCoords[j, 3])
                     return true;
@@ -32,7 +85,7 @@ namespace Snake
                 return false;
             }
 
-            for(int i = 0; i < numberOfPortals; ++i){
+            for(int i = 0; i < numberOfPortals; ++i){ //Portals can overlap atm, fix later
                 do{
                     if (randGen.Next(2) == 0){
                         portalCoords[i, 0] = randGen.Next(boardSize);
@@ -50,7 +103,9 @@ namespace Snake
             }
         }
 
-        //Updates the board to reflect current state
+        /// <summary>
+        /// Updates the board to reflect current state.
+        /// </summary>
         private void UpdateBoard(){
             Array.Clear(board);
             board[headLocation[0], headLocation[1]] = 1;
@@ -61,7 +116,9 @@ namespace Snake
             }
         }
 
-        //Displays the game, currently only in Console
+        /// <summary>
+        /// Displays the game, currently only in Console.
+        /// </summary>
         public void DisplayGame(){
             string PortalLetter(int x, int y){
                 string[] letters = ["R", "G", "B"];
@@ -105,7 +162,12 @@ namespace Snake
             Console.WriteLine();
         }
 
-        //Checks if a portal exists at the current location
+        /// <summary>
+        /// Checks if a portal exists at the current location
+        /// </summary>
+        /// <param name="x">The x coordinate to check.</param>
+        /// <param name="y">The y coordinate to check.</param>
+        /// <returns>Bool true if a portal is present otherwise false.</returns>        
         private bool PortalCheck(int x, int y){
             if (x == -1 && y == -1 || x == -1 && y == boardSize || x == boardSize && y == -1)
                 return false;
@@ -120,16 +182,27 @@ namespace Snake
             return false;
         }
 
-        //Checks if the game is over and returns true if game is still on
+        /// <summary>
+        /// Checks if the game is over and returns true if game is still on
+        /// </summary>
+        /// <returns>Bool true if game is over otherwise false.</returns>
         public bool GameOver(){
             return gameOver;
         }
 
+        /// <summary>
+        /// Gets the current key pressed by the player.
+        /// </summary>
+        /// <param name="cki">The key that is being pressed.</param>
         public void GetMove(ConsoleKeyInfo cki){
             MakeMove(KeyToMove(cki.Key.ToString()));
         }
 
-        //Converts the string of a key to correct move
+        /// <summary>
+        /// Converts the string of a key to correct move.
+        /// </summary>
+        /// <param name="key">The key to that is to be converted</param>
+        /// <returns>The converted int value of the key</returns>
         private int KeyToMove(string key){
             switch(key){
                 case "UpArrow":
@@ -145,7 +218,11 @@ namespace Snake
             }
         }
 
-        //Moves the snake up (0), right (1), down(2) or left (3)
+        /// <summary>
+        /// Moves the snake up (0), right (1), down(2) or left (3), and checks for portals, apples and/or collisons.
+        /// Depening on what is found calls the appropiate methods.
+        /// </summary>
+        /// <param name="move">Which direection to move the snake.</param>
         private void MakeMove(int move){
             int coord = -1, coordValue = 0;
             switch(move){
@@ -201,7 +278,11 @@ namespace Snake
             }
         }
 
-        //Moves the snake through a portal
+        /// <summary>
+        /// Moves the snake through a portal.
+        /// </summary>
+        /// <param name="coord">The corrdinate to change.</param>
+        /// <param name="coordValue">By what value to change coord.</param>
         private void PortalMove(int coord, int coordValue){
             //Remove the tail from the list
             if (score > 0){ //Only need to move snake if it has a body
@@ -215,7 +296,7 @@ namespace Snake
             }
 
             int portal = 100;
-            int index = 100; //Throw error if we are here without reason
+            int index = 100; //Throw error if these aren't updated properly
 
             int x = headLocation[0] < 0? 0 : headLocation[0];
             int y = headLocation[1] < 0? 0 : headLocation[1];
@@ -249,9 +330,12 @@ namespace Snake
             }
         }
 
-        //Checks if the snake will collide with itself after moving
+        /// <summary>
+        /// Checks if the snake is colliding with itself.
+        /// </summary>
+        /// <returns>Bool true for collison otherwise false.</returns>        
         private bool CollisonCheck(){
-            if (score == 0) //cannot collide with itself it only is a head
+            if (score == 0) //cannot collide with itself if it's only a head
                 return false;
 
             for (int i = 0; i < score; ++i){
@@ -262,7 +346,10 @@ namespace Snake
             return false;
         }
 
-        //Checks if the head is on a apple
+        /// <summary>
+        /// Checks if the head is on a apple.
+        /// </summary>
+        /// <returns>Bool true if an apple is eaten otherwise false.</returns>        
         private bool OnApple(){
             if (headLocation[0] == appleLocation[0] && headLocation[1] == appleLocation[1])
                 return true;
@@ -270,14 +357,20 @@ namespace Snake
                 return false;
         }
 
-        //Adds the old head to the snake
+        /// <summary>
+        /// Adds the old head to the snake.
+        /// </summary>
+        /// <param name="coord">The coord that got changed.</param>
+        /// <param name="coordValue">The value which coord was changed.</param>        
         private void LengthenSnake(int coord, int coordValue){
             snakeCoords[score, 0] = headLocation[0];
             snakeCoords[score, 1] = headLocation[1];
             snakeCoords[score, coord] -= coordValue;
         }
 
-        //Randomly generates a new apple
+        /// <summary>
+        /// Randomly generates a new apple
+        /// </summary>        
         private void NewAppleLocation(){
             bool OverlapCheck(){
                 if (appleLocation[0] == headLocation[0] && appleLocation[1] == headLocation[1])
@@ -295,7 +388,11 @@ namespace Snake
             } while (OverlapCheck());
         }
 
-        //Moves the snake on the board
+        /// <summary>
+        /// Moves the snake on the board
+        /// </summary>
+        /// <param name="coord">The corrdinate to change.</param>
+        /// <param name="coordValue">By what value to change coord.</param>       
         private void MoveSnake(int coord, int coordValue){
             //Remove the tail from the list
             if (score > 0){ //Only need to move snake if it has a body
@@ -309,13 +406,20 @@ namespace Snake
             }
         }
 
-        //Used to display some stats after gameovering
+        /// <summary>
+        /// Displays misc. stats from the game after gameovering.
+        /// </summary>        
         public void DisplayEndStats(){
             Console.WriteLine("Game over!");
             Console.WriteLine($"You got a final score of {score}.");
             Console.WriteLine($"You did a total of {numberOfMoves} moves.");
         }
 
+        /// <summary>
+        /// Constructor for the class.
+        /// </summary>
+        /// <param name="size">Thge size of the board.</param>
+        /// <param name="portals">The number of portals to be added.</param>
         public SnakeGame(int size, int portals){
             score = 0;
             numberOfMoves = 0;
