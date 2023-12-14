@@ -85,7 +85,7 @@ namespace Snake
                 return false;
             }
 
-            for(int i = 0; i < numberOfPortals; ++i){ //Portals can overlap atm, fix later
+            for(int i = 0; i < numberOfPortals; ++i){
                 do{
                     if (randGen.Next(2) == 0){
                         portalCoords[i, 0] = randGen.Next(boardSize);
@@ -160,6 +160,37 @@ namespace Snake
                 Console.WriteLine();
             }
             Console.WriteLine();
+        }
+
+        /// <summary>
+        /// Returns the board with portals added.
+        /// </summary>
+        /// <returns>The game matrix</returns>
+        public int[,] SendGame(){
+            int PortalNum(int x, int y){
+                x = x == boardSize + 1? boardSize : x;
+                y = y == boardSize + 1? boardSize : y;
+                int[] portalNum = [5, 6, 7];
+                for (int i = 0; i < numberOfPortals; ++i){
+                    if (portalCoords[i, 0] == x && portalCoords[i, 1] == y || portalCoords[i, 2] == x && portalCoords[i, 3] == y)
+                        return portalNum[i];
+                }
+                return 4;
+            }
+            int[,] fullBoard = new int[boardSize+2, boardSize+2];
+        
+            for(int j = 0; j < boardSize + 2; ++j){
+                for(int i = 0; i < boardSize + 2; ++i){
+                    if( j == 0 || i == 0 || j == boardSize + 1 || i == boardSize + 1){
+                        fullBoard[j, i] = PortalNum(j, i);
+                    }
+                    else{
+                        fullBoard[j, i] = board[j - 1, i - 1];
+                    }
+                }
+            }
+
+            return fullBoard;
         }
 
         /// <summary>
