@@ -3,11 +3,12 @@
 int size = 13, portals = 5;
 
 var testSnake = new SnakeGame(size, portals);
-testSnake.CreateBoard();
+testSnake.ResetGame();
 Thread.Sleep(500);
 ConsoleKeyInfo cki;
 
-do{
+do
+{
     testSnake.DisplayGame();
     cki = Console.ReadKey(true);
     testSnake.GetMove(cki);

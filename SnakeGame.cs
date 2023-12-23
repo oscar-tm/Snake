@@ -56,11 +56,18 @@ namespace Snake
         private int numberOfPortals;
 
         /// <summary>
-        /// Creates a board with size "size" and randomly places items to start the game
+        /// Resets the game, allowing for a restart.
         /// </summary>
-        public void CreateBoard()
+        public void ResetGame()
         {
-
+            Array.Clear(board);
+            Array.Clear(headLocation);
+            Array.Clear(appleLocation);
+            Array.Clear(snakeCoords);
+            Array.Clear(portalCoords);
+            score = 0;
+            gameOver = false;
+            numberOfMoves = 0;
             var randGen = new Random();
 
             for (int i = 0; i < 2; ++i)
