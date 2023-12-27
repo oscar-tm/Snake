@@ -261,10 +261,19 @@ namespace Snake
         }
 
         /// <summary>
-        /// Calculates the current score based on the number of apples eaten + distance to next apple.
+        /// Returns the current score of the game.
         /// </summary>
-        /// <returns>The current score of the game</returns>
-        public float GetScore()
+        /// <returns>The current score of the game.</returns>
+        public int GetScore()
+        {
+            return score;
+        }
+
+        /// <summary>
+        /// Calculates the current value of the postion based on the number of apples eaten + distance to next apple.
+        /// </summary>
+        /// <returns>The current position value of the game</returns>
+        public float GetPositionValue()
         {
             float dist = (float)Math.Sqrt(Math.Pow(headLocation[0] - appleLocation[0], 2) + Math.Pow(headLocation[1] - appleLocation[1], 2));
             if (dist != 0)
