@@ -201,13 +201,13 @@ namespace Snake
             {
                 x = x == boardSize + 1 ? boardSize : x;
                 y = y == boardSize + 1 ? boardSize : y;
-                int[] portalNum = [5, 6, 7];
+                int[] portalNum = [200, 233, 255];
                 for (int i = 0; i < numberOfPortals; ++i)
                 {
                     if (portalCoords[i, 0] == x && portalCoords[i, 1] == y || portalCoords[i, 2] == x && portalCoords[i, 3] == y)
                         return portalNum[i];
                 }
-                return 4;
+                return 170;
             }
             int[,] fullBoard = new int[boardSize + 2, boardSize + 2];
 
@@ -221,7 +221,7 @@ namespace Snake
                     }
                     else
                     {
-                        fullBoard[j, i] = board[j - 1, i - 1];
+                        fullBoard[j, i] = board[j - 1, i - 1] * 40;
                     }
                 }
             }
@@ -261,12 +261,17 @@ namespace Snake
         }
 
         /// <summary>
-        /// Gets the current score of the game.
+        /// Calculates the current score based on the number of apples eaten + distance to next apple.
         /// </summary>
         /// <returns>The current score of the game</returns>
-        public int GetScore()
+        public float GetScore()
         {
-            return score;
+            int dist = (int)Math.Sqrt(Math.Pow(headLocation[0] - appleLocation[0], 2) + Math.Pow(headLocation[1] - appleLocation[1], 2));
+            if (dist != 0)
+            {
+                dist = 1 / dist;
+            }
+            return score + dist;
         }
 
         /// <summary>
