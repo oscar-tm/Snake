@@ -1,6 +1,6 @@
 ﻿using Snake;
 
-int size = 13, portals = 5;
+int size = 15, portals = 5;
 
 var testSnake = new SnakeGame(size, portals);
 testSnake.ResetGame();

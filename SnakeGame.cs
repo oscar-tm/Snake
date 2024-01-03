@@ -72,10 +72,10 @@ namespace Snake
 
             for (int i = 0; i < 2; ++i)
             {
-                headLocation[i] = randGen.Next(boardSize);
+                headLocation[i] = randGen.Next(1, boardSize - 1);
                 do
                 {
-                    appleLocation[i] = randGen.Next(boardSize);
+                    appleLocation[i] = randGen.Next(1, boardSize - 1);
                 } while (headLocation[i] == appleLocation[i]);
             }
 
@@ -104,17 +104,17 @@ namespace Snake
                 {
                     if (randGen.Next(2) == 0)
                     {
-                        portalCoords[i, 0] = randGen.Next(boardSize);
-                        portalCoords[i, 1] = randGen.Next(2) > 0 ? boardSize : 0;
-                        portalCoords[i, 2] = randGen.Next(2) > 0 ? boardSize : 0;
-                        portalCoords[i, 3] = randGen.Next(boardSize);
+                        portalCoords[i, 0] = randGen.Next(1, boardSize - 1);
+                        portalCoords[i, 1] = randGen.Next(2) > 0 ? boardSize - 1 : 0;
+                        portalCoords[i, 2] = randGen.Next(2) > 0 ? boardSize - 1 : 0;
+                        portalCoords[i, 3] = randGen.Next(1, boardSize - 1);
                     }
                     else
                     {
-                        portalCoords[i, 0] = randGen.Next(2) > 0 ? boardSize : 0;
-                        portalCoords[i, 1] = randGen.Next(boardSize);
-                        portalCoords[i, 2] = randGen.Next(boardSize);
-                        portalCoords[i, 3] = randGen.Next(2) > 0 ? boardSize : 0;
+                        portalCoords[i, 0] = randGen.Next(2) > 0 ? boardSize - 1 : 0;
+                        portalCoords[i, 1] = randGen.Next(1, boardSize - 1);
+                        portalCoords[i, 2] = randGen.Next(1, boardSize - 1);
+                        portalCoords[i, 3] = randGen.Next(2) > 0 ? boardSize - 1 : 0;
                     }
                 } while (OverlapCheck(i));
             }
@@ -140,13 +140,9 @@ namespace Snake
         /// </summary>
         public void DisplayGame()
         {
-            string PortalLetter(int x, int y)
+            string PortalLetter(int y, int x)
             {
                 string[] letters = ["R", "G", "B"];
-                if (x == -1)
-                    x = 0;
-                if (y == -1)
-                    y = 0;
                 for (int i = 0; i < numberOfPortals; ++i)
                 {
                     if (portalCoords[i, 0] == x && portalCoords[i, 1] == y || portalCoords[i, 2] == x && portalCoords[i, 3] == y)
@@ -165,21 +161,14 @@ namespace Snake
             Console.WriteLine("Press 'ESC' to exit before game over");
             Console.WriteLine($"Score: {score}");
             Console.WriteLine("");
-            for (int j = -1; j < boardSize + 1; ++j)
+            for (int i = 0; i < boardSize; ++i)
             {
                 Console.Write("\t");
-                for (int i = -1; i < boardSize + 1; ++i)
+                for (int j = 0; j < boardSize; ++j)
                 {
-                    if (j == -1 || i == -1 || j == boardSize || i == boardSize)
+                    if (j == 0 || i == 0 || j == boardSize - 1 || i == boardSize - 1)
                     {
-                        if (PortalCheck(i, j))
-                        {
-                            Console.Write($"{PortalLetter(i, j)} ");
-                        }
-                        else
-                        {
-                            Console.Write("# ");
-                        }
+                        Console.Write($"{PortalLetter(i, j)} ");
                     }
                     else
                     {
@@ -197,7 +186,7 @@ namespace Snake
         /// <returns>The game matrix</returns>
         public int[,] SendGame()
         {
-            int PortalNum(int x, int y)
+            int PortalNum(int x, int y) //TODO: fix this mess
             {
                 x = x == boardSize + 1 ? boardSize : x;
                 y = y == boardSize + 1 ? boardSize : y;
@@ -211,11 +200,11 @@ namespace Snake
             }
             int[,] fullBoard = new int[boardSize + 2, boardSize + 2];
 
-            for (int j = 0; j < boardSize + 2; ++j)
+            for (int i = 0; i < boardSize; ++i)
             {
-                for (int i = 0; i < boardSize + 2; ++i)
+                for (int j = 0; j < boardSize; ++j)
                 {
-                    if (j == 0 || i == 0 || j == boardSize + 1 || i == boardSize + 1)
+                    if (j == 0 || i == 0 || j == boardSize - 1 || i == boardSize - 1)
                     {
                         fullBoard[j, i] = PortalNum(j, i);
                     }
@@ -235,18 +224,18 @@ namespace Snake
         /// <param name="x">The x coordinate to check.</param>
         /// <param name="y">The y coordinate to check.</param>
         /// <returns>Bool true if a portal is present otherwise false.</returns>        
-        private bool PortalCheck(int x, int y)
+        private bool PortalCheck(int y, int x)
         {
-            if (x == -1 && y == -1 || x == -1 && y == boardSize || x == boardSize && y == -1)
+            if (x == 0 && y == 0 || x == 0 && y == boardSize - 1 || x == boardSize - 1 && y == 0 || x == boardSize - 1 && y == boardSize - 1)
                 return false;
-            if (x == -1)
-                x = 0;
-            if (y == -1)
-                y = 0;
+
             for (int i = 0; i < numberOfPortals; ++i)
             {
                 if (portalCoords[i, 0] == x && portalCoords[i, 1] == y || portalCoords[i, 2] == x && portalCoords[i, 3] == y)
+                {
+                    Console.WriteLine("Portal!");
                     return true;
+                }
             }
             return false;
         }
@@ -278,7 +267,7 @@ namespace Snake
             float dist = (float)Math.Sqrt(Math.Pow(headLocation[0] - appleLocation[0], 2) + Math.Pow(headLocation[1] - appleLocation[1], 2));
             if (dist != 0)
             {
-                dist = 1 / dist;
+                dist = (float)0.3 / dist;
             }
             return score + dist;
         }
@@ -334,19 +323,19 @@ namespace Snake
             switch (move)
             {
                 case 0:
-                    coord = 1;
+                    coord = 0;
                     coordValue = -1;
                     break;
                 case 1:
-                    coord = 0;
-                    coordValue = 1;
-                    break;
-                case 2:
                     coord = 1;
                     coordValue = 1;
                     break;
-                case 3:
+                case 2:
                     coord = 0;
+                    coordValue = 1;
+                    break;
+                case 3:
+                    coord = 1;
                     coordValue = -1;
                     break;
                 default:
@@ -357,7 +346,7 @@ namespace Snake
             }
             headLocation[coord] += coordValue;
             ++numberOfMoves;
-            if (headLocation[coord] < 0 || headLocation[coord] > boardSize - 1)
+            if (headLocation[coord] == 0 || headLocation[coord] == boardSize - 1)
             { //Going outside of the board results in gameover
                 if (PortalCheck(headLocation[0], headLocation[1]))
                 {
@@ -415,8 +404,8 @@ namespace Snake
             int portal = 100;
             int index = 100; //Throw error if these aren't updated properly
 
-            int x = headLocation[0] < 0 ? 0 : headLocation[0];
-            int y = headLocation[1] < 0 ? 0 : headLocation[1];
+            int x = headLocation[1];
+            int y = headLocation[0];
 
             //Update head location to otherside of portal
             for (int i = 0; i < numberOfPortals; ++i)
@@ -434,32 +423,35 @@ namespace Snake
             }
             if (portalCoords[index, portal] == 0)
             {
-                headLocation[0] = 0;
-                headLocation[1] = portalCoords[index, portal + 1] == boardSize ? boardSize - 1 : portalCoords[index, portal + 1];
+                headLocation[1] = 1;
+                headLocation[0] = portalCoords[index, portal + 1];
             }
-            else if (portalCoords[index, portal] == boardSize)
+            else if (portalCoords[index, portal] == boardSize - 1)
             {
-                headLocation[0] = boardSize - 1;
-                headLocation[1] = portalCoords[index, portal + 1] == boardSize ? boardSize - 1 : portalCoords[index, portal + 1];
+                headLocation[1] = boardSize - 2;
+                headLocation[0] = portalCoords[index, portal + 1];
             }
             else if (portalCoords[index, portal + 1] == 0)
             {
-                headLocation[0] = portalCoords[index, portal];
-                headLocation[1] = 0;
+                headLocation[1] = portalCoords[index, portal];
+                headLocation[0] = 1;
             }
             else
             {
-                headLocation[0] = portalCoords[index, portal];
-                headLocation[1] = boardSize - 1;
+                headLocation[1] = portalCoords[index, portal];
+                headLocation[0] = boardSize - 2;
             }
         }
 
         /// <summary>
-        /// Checks if the snake is colliding with itself.
+        /// Checks if the snake is colliding with itself or the perimiter wall.
         /// </summary>
         /// <returns>Bool true for collison otherwise false.</returns>        
         private bool CollisonCheck()
         {
+            if (headLocation[0] == 0 || headLocation[0] == boardSize - 1 || headLocation[1] == 0 || headLocation[1] == boardSize - 1) //collide with wall
+                return true;
+
             if (score == 0) //cannot collide with itself if it's only a head
                 return false;
 
@@ -513,11 +505,11 @@ namespace Snake
                 }
                 return false;
             }
-            var randGen = new Random(); //mem leak?
+            var randGen = new Random();
             do
             {
-                appleLocation[0] = randGen.Next(boardSize);
-                appleLocation[1] = randGen.Next(boardSize);
+                appleLocation[0] = randGen.Next(1, boardSize - 1);
+                appleLocation[1] = randGen.Next(1, boardSize - 1);
             } while (OverlapCheck());
         }
 
