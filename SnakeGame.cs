@@ -186,19 +186,17 @@ namespace Snake
         /// <returns>The game matrix</returns>
         public int[,] SendGame()
         {
-            int PortalNum(int x, int y) //TODO: fix this mess
+            int PortalNum(int y, int x)
             {
-                x = x == boardSize + 1 ? boardSize : x;
-                y = y == boardSize + 1 ? boardSize : y;
-                int[] portalNum = [200, 233, 255];
+                int[] portalNum = [5, 6, 7];
                 for (int i = 0; i < numberOfPortals; ++i)
                 {
                     if (portalCoords[i, 0] == x && portalCoords[i, 1] == y || portalCoords[i, 2] == x && portalCoords[i, 3] == y)
                         return portalNum[i];
                 }
-                return 170;
+                return -1;
             }
-            int[,] fullBoard = new int[boardSize + 2, boardSize + 2];
+            int[,] fullBoard = new int[boardSize, boardSize];
 
             for (int i = 0; i < boardSize; ++i)
             {
@@ -210,7 +208,7 @@ namespace Snake
                     }
                     else
                     {
-                        fullBoard[j, i] = board[j - 1, i - 1] * 40;
+                        fullBoard[j, i] = board[j, i];
                     }
                 }
             }
@@ -233,7 +231,6 @@ namespace Snake
             {
                 if (portalCoords[i, 0] == x && portalCoords[i, 1] == y || portalCoords[i, 2] == x && portalCoords[i, 3] == y)
                 {
-                    Console.WriteLine("Portal!");
                     return true;
                 }
             }
